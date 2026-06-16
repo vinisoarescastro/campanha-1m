@@ -12,20 +12,17 @@ Analisar, calcular, auditar e validar a geração de cupons da campanha promocio
 
 A campanha **"5 Casas e 1 Milhão"** vigora de **julho a dezembro de 2025** e prevê:
 
-- **5 sorteios mensais** (agosto a dezembro/2025), cada um premiando **1 casa mobiliada com carro na garagem**.
-- **1 sorteio final** em **janeiro/2026** com prêmio de **R$ 1.000.000,00**.
+- **5 sorteios mensais**, cada um premiando **1 casa mobiliada com carro na garagem**:
+  - Cupons de julho → sorteio em **15/08/2025**
+  - Cupons de agosto → sorteio em **15/09/2025**
+  - Cupons de setembro → sorteio em **15/10/2025**
+  - Cupons de outubro → sorteio em **15/11/2025**
+  - Cupons de novembro → sorteio em **15/12/2025**
+- **1 sorteio final em 15/08/2026** com prêmio de **R$ 1.000.000,00** — todos os cupons gerados entre julho e dezembro/2025 participam.
 
-**Geração de cupons:** os cupons são gerados com base no **valor total recebido por cliente no mês**, conforme tabela de faixas:
+**Geração de cupons:** a cada **R$ 100,00 completos** recebidos no mês, o cliente ganha **1 cupom**, sem limite máximo.
 
-| Valor recebido no mês | Cupons gerados |
-|---|:---:|
-| R$ 100,00 a R$ 200,00 | 1 |
-| R$ 200,01 a R$ 300,00 | 2 |
-| R$ 300,01 a R$ 500,00 | 3 |
-| R$ 500,01 a R$ 1.000,00 | 5 |
-| R$ 1.000,01 a R$ 2.000,00 | 10 |
-| R$ 2.000,01 a R$ 5.000,00 | 20 |
-| Acima de R$ 5.000,00 | 50 |
+> Fórmula: `FLOOR(total_recebido_no_mes / 100)` — ex.: R$ 350 → 3 cupons, R$ 5.300 → 53 cupons.
 
 **Regras principais:**
 
