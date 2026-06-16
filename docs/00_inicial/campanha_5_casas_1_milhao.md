@@ -13,17 +13,17 @@ Os sorteios ocorrem sempre no mês subsequente ao fechamento das parcelas — ou
 
 ### Calendário de Sorteios
 
-| Mês de Pagamento | Mês do Sorteio | Prêmio |
+| Mês de Pagamento | Data do Sorteio | Prêmio |
 |---|---|---|
-| Julho/2025 | Agosto/2025 | Sorteio — 1 casa mobiliada com carro na garagem |
-| Agosto/2025 | Setembro/2025 | Sorteio — 1 casa mobiliada com carro na garagem |
-| Setembro/2025 | Outubro/2025 | Sorteio — 1 casa mobiliada com carro na garagem |
-| Outubro/2025 | Novembro/2025 | Sorteio — 1 casa mobiliada com carro na garagem |
-| Novembro/2025 | Dezembro/2025 | Sorteio — 1 casa mobiliada com carro na garagem |
-| Dezembro/2025 | Janeiro/2026 | 🏆 PRÊMIO FINAL — R$ 1.000.000,00 |
+| Julho/2025 | 15/08/2025 | 1 casa mobiliada com carro na garagem |
+| Agosto/2025 | 15/09/2025 | 1 casa mobiliada com carro na garagem |
+| Setembro/2025 | 15/10/2025 | 1 casa mobiliada com carro na garagem |
+| Outubro/2025 | 15/11/2025 | 1 casa mobiliada com carro na garagem |
+| Novembro/2025 | 15/12/2025 | 1 casa mobiliada com carro na garagem |
+| Julho a Dezembro/2025 | **15/08/2026** | 🏆 PRÊMIO FINAL — R$ 1.000.000,00 |
 
-- **Agosto a Dezembro:** 5 sorteios mensais de 1 casa mobiliada com carro na garagem cada.
-- **Janeiro/2026:** sorteio do prêmio final de **R$ 1.000.000,00** (um milhão de reais).
+- **5 sorteios mensais** (15/ago a 15/dez/2025): 1 casa mobiliada com carro na garagem cada.
+- **Sorteio final em 15/08/2026**: R$ 1.000.000,00 — todos os cupons gerados entre julho e dezembro/2025 participam.
 
 ---
 
@@ -31,23 +31,19 @@ Os sorteios ocorrem sempre no mês subsequente ao fechamento das parcelas — ou
 
 ### Valor de Referência
 
-A geração de cupons segue uma tabela de faixas de valor recebido no mês.
+A geração de cupons é **linear**: a cada **R$ 100,00 completos efetivamente recebidos** no mês, o cliente ganha **1 cupom**. Não há limite máximo de cupons.
+
+> Fórmula: `FLOOR(total_recebido_no_mes / 100)`
+>
+> Exemplos: R$ 150 → 1 cupom | R$ 250 → 2 cupons | R$ 5.300 → 53 cupons
+
+**O valor considerado é sempre o montante efetivamente recebido pela Brasil Terrenos**, não o valor original da parcela. Descontos concedidos reduzem a base de cálculo dos cupons.
+
+> Exemplo: parcela de R$ 1.530,00 geraria 15 cupons. Se o cliente receber desconto e pagar R$ 830,00, serão gerados 8 cupons.
 
 Todo dinheiro recebido é contabilizado, independentemente de ser parcela normal, renegociação, juros ou multas — o princípio é **"dinheiro na mão"**. O sistema contabiliza o volume total pago no mês.
 
 Não há transporte de "sobras" de valores para o mês seguinte — o cálculo é fechado dentro do período mensal.
-
-### Tabela de Faixas
-
-| Valor Total Recebido no Mês | Cupons Gerados |
-|---|:---:|
-| R$ 100,00 a R$ 200,00 | 1 cupom |
-| R$ 200,01 a R$ 300,00 | 2 cupons |
-| R$ 300,01 a R$ 500,00 | 3 cupons |
-| R$ 500,01 a R$ 1.000,00 | 5 cupons |
-| R$ 1.000,01 a R$ 2.000,00 | 10 cupons |
-| R$ 2.000,01 a R$ 5.000,00 | 20 cupons |
-| Acima de R$ 5.000,00 | 50 cupons |
 
 ### Pagamentos Qualificados
 
