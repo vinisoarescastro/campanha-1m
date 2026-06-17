@@ -1,0 +1,38 @@
+# ─── Dados sensíveis — nunca versionar ───────────────────────────────────────
+data/raw/
+data/processed/
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.xlsm
+*.pdf
+*.zip
+*.tar.gz
+
+# ─── Outputs gerados ─────────────────────────────────────────────────────────
+outputs/
+
+# ─── Python ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+.env
+*.egg-info/
+dist/
+build/
+
+# ─── Jupyter ─────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ─── Editores e SO ───────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+Desktop.ini
+.DS_Store
