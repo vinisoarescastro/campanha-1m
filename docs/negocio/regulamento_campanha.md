@@ -20,7 +20,7 @@ Os sorteios ocorrem sempre no mês subsequente ao fechamento das parcelas — ou
 | Setembro/2025 | 15/10/2025 | 1 casa mobiliada com carro na garagem |
 | Outubro/2025 | 15/11/2025 | 1 casa mobiliada com carro na garagem |
 | Novembro/2025 | 15/12/2025 | 1 casa mobiliada com carro na garagem |
-| Julho a Dezembro/2025 | **15/01/2027** | 🏆 PRÊMIO FINAL — R$ 1.000.000,00 |
+| Julho a Dezembro/2025 | **15/01/2027** | PRÊMIO FINAL: R$ 1.000.000,00 |
 
 - **5 sorteios mensais** (15/ago a 15/dez/2025): 1 casa mobiliada com carro na garagem cada.
 - **Sorteio final em 15/01/2027**: R$ 1.000.000,00 — todos os cupons gerados entre julho e dezembro/2025 participam.

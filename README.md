@@ -37,10 +37,24 @@ A campanha **"5 Casas e 1 Milhão"** vigora de **julho a dezembro de 2025** e pr
 
 ## Documentos de Referência
 
+### Negócio
 | Documento | Descrição |
 |---|---|
-| [`docs/00_inicial/campanha_5_casas_1_milhao.md`](docs/00_inicial/campanha_5_casas_1_milhao.md) | Regulamento expandido da campanha — fonte oficial das regras de negócio |
-| [`docs/00_inicial/dicionario_de_dados.md`](docs/00_inicial/dicionario_de_dados.md) | Dicionário das tabelas do sistema interno utilizadas na análise |
+| [`docs/negocio/regulamento_campanha.md`](docs/negocio/regulamento_campanha.md) | Regulamento expandido da campanha — fonte oficial das regras de negócio |
+| [`docs/negocio/requisitos.md`](docs/negocio/requisitos.md) | Perguntas em aberto, decisões confirmadas e pontos de atenção |
+
+### Técnico
+| Documento | Descrição |
+|---|---|
+| [`docs/tecnico/dicionario_de_dados.md`](docs/tecnico/dicionario_de_dados.md) | Dicionário das tabelas do sistema interno utilizadas na análise |
+| [`docs/tecnico/decisoes_tecnicas.md`](docs/tecnico/decisoes_tecnicas.md) | Registro de decisões de implementação (DT-001 a DT-006) |
+| [`docs/tecnico/mapeamento_campos.md`](docs/tecnico/mapeamento_campos.md) | De-para entre conceitos de negócio e campos do banco de dados |
+
+### Operacional
+| Documento | Descrição |
+|---|---|
+| [`pipelines/pipeline_sorteio_mensal.md`](pipelines/pipeline_sorteio_mensal.md) | Checklist operacional passo a passo para execução de cada sorteio |
+| [`CHANGELOG.md`](CHANGELOG.md) | Histórico de marcos, entregas e decisões relevantes |
 
 ---
 
@@ -48,19 +62,36 @@ A campanha **"5 Casas e 1 Milhão"** vigora de **julho a dezembro de 2025** e pr
 
 ```text
 .
-├── docs/
-│   └── 00_inicial/
-│       ├── campanha_5_casas_1_milhao.docx   # Regulamento da campanha
-│       └── dicionario_de_dados.md           # Dicionário de dados do sistema
-├── sql/
-│   ├── 00_referencias/     # Scripts exploratórios e mapeamento de dados
-│   ├── 01_base_elegivel/   # Identificação de clientes e vendas participantes
-│   ├── 02_calculo_cupons/  # Agregação de recebimentos e aplicação das faixas
-│   ├── 03_validacoes/      # Auditorias, cruzamentos e testes de consistência
-│   └── 04_relatorios/      # Consultas finais para os sorteios e visão gerencial
-├── outputs/                # Arquivos gerados (listas de cupons, relatórios)
+├── .gitignore
 ├── README.md
-└── .gitignore
+├── CHANGELOG.md
+│
+├── docs/
+│   ├── negocio/
+│   │   ├── regulamento_campanha.md   # Regulamento oficial da campanha
+│   │   └── requisitos.md             # Perguntas em aberto e decisões confirmadas
+│   ├── tecnico/
+│   │   ├── dicionario_de_dados.md    # Dicionário das 16 tabelas do sistema ERP
+│   │   ├── decisoes_tecnicas.md      # Registro de decisões de implementação (DT-NNN)
+│   │   └── mapeamento_campos.md      # De-para negócio × banco de dados
+│   └── resultados/
+│       └── (registros de cada sorteio após execução)
+│
+├── sql/
+│   ├── exploracao/     # Consultas exploratórias e de referência técnica
+│   ├── views/          # Views a criar no SQL Server
+│   ├── validacoes/     # Queries de auditoria — executar antes de cada sorteio
+│   └── relatorios/     # Consultas finais para os sorteios e painéis gerenciais
+│
+├── data/
+│   ├── raw/            # Extrações brutas (não versionado — ver .gitignore)
+│   ├── processed/      # Dados tratados intermediários (não versionado)
+│   └── reference/      # Tabelas de referência estáticas (empreendimentos, ganhadores)
+│
+├── pipelines/
+│   └── pipeline_sorteio_mensal.md    # Checklist operacional de cada sorteio
+│
+└── src/                # Scripts auxiliares (Python/automação)
 ```
 
 ---
@@ -118,11 +149,10 @@ As consultas utilizam **CTEs (Common Table Expressions)** para organização e l
 
 | Arquivo | Descrição |
 |---|---|
-| `sql/00_referencias/` | Scripts exploratórios: contagem de registros, faixas de datas, tipos de parcelas |
-| `sql/01_base_elegivel/` | Base de vendas e clientes participantes da campanha |
-| `sql/02_calculo_cupons/` | Cálculo de cupons por cliente/venda/mês com aplicação das faixas |
-| `sql/03_validacoes/` | Cruzamentos de auditoria e testes de consistência |
-| `sql/04_relatorios/` | Relatórios finais para os sorteios e painéis gerenciais |
+| `sql/exploracao/` | Scripts exploratórios: contagem de registros, faixas de datas, tipos de parcelas |
+| `sql/views/` | Views a criar no SQL Server para centralizar lógicas reutilizadas |
+| `sql/validacoes/` | Cruzamentos de auditoria e testes de consistência — executar antes de cada sorteio |
+| `sql/relatorios/` | Relatórios finais para os sorteios e painéis gerenciais |
 
 ---
 

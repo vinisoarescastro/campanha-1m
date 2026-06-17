@@ -8,7 +8,13 @@
 
 - [CategoriasPrecoProd](#categoriasprecoprod)
 - [ContasReceber](#contasreceber)
+- [ContasReceberCalc](#contasreceberCalc)
+- [Empresas](#empresas)
+- [ItensRecebidas](#itensrecebidas)
+- [ItensVenda](#itensvenda)
 - [Obras](#obras)
+- [Pessoas](#pessoas)
+- [PesTel](#pestel)
 - [PrdSrv](#prdsrv)
 - [Recebidas](#recebidas)
 - [UnidadePer](#unidadeper)
@@ -664,3 +670,184 @@ Log de parametrizações de parcelas associadas às vendas recebidas.
 | CarenciaAtrasoCorrecao_vrl | NÃO | smallint | 2 | NULL | 0 | Dias de carência para cobrança de correção por atraso |
 | CobrarJurosProRata_vrl | NÃO | smallint | 2 | NULL | 0 | Cobrar juros pró-rata |
 | CobrarJurosProRataPrimeiroMes_vrl | NÃO | bit | 1 | NULL | 0 | Calcular juros no primeiro mês como pró-rata: 0 = Não; 1 = Sim |
+
+---
+
+## ContasReceberCalc
+
+Armazena os valores calculados das parcelas a receber, incluindo principal, juros, correção, multa, taxa de boleto e valores antecipados.
+
+| Coluna | Chave | Tipo | Tamanho | Padrão | Null | Descrição |
+|--------|:-----:|------|:-------:|:------:|:----:|-----------|
+| Empresa_crc | NÃO | smallint | 2 | NULL | 0 | Código da empresa |
+| Obra_crc | NÃO | varchar | 5 | NULL | 0 | Código da obra |
+| NumVend_crc | NÃO | int | 4 | NULL | 0 | Número da venda |
+| NumParc_crc | NÃO | int | 4 | NULL | 0 | Número da parcela |
+| Tipo_crc | NÃO | varchar | 3 | NULL | 0 | Tipo da parcela |
+| NumParcGer_crc | NÃO | int | 4 | NULL | 0 | Número geral da parcela |
+| DataCalc_crc | NÃO | datetime | 8 | NULL | 0 | Data do cálculo |
+| ValParcela_crc | NÃO | numeric | 9 | NULL | 0 | Valor da parcela calculada |
+| ValPrincipal_crc | NÃO | numeric | 9 | NULL | 0 | Valor do principal |
+| ValPrincipalPrice_crc | NÃO | numeric | 9 | NULL | 0 | Valor do principal (Price) |
+| ValJurosComp_crc | NÃO | numeric | 9 | NULL | 0 | Valor dos juros compostos |
+| ValJurosCompPrice_crc | NÃO | numeric | 9 | NULL | 0 | Valor dos juros compostos (Price) |
+| ValCorrecao_crc | NÃO | numeric | 9 | NULL | 0 | Valor da correção monetária |
+| ValJuroAtraso_crc | NÃO | numeric | 9 | NULL | 0 | Valor dos juros por atraso |
+| ValMultaAtraso_crc | NÃO | numeric | 9 | NULL | 0 | Valor da multa por atraso |
+| ValCorrecaoAtraso_crc | NÃO | numeric | 9 | NULL | 0 | Valor da correção por atraso |
+| ValDescontoCusta_crc | NÃO | numeric | 9 | NULL | 0 | Valor do desconto de custas |
+| ValDescontoImposto_crc | NÃO | numeric | 9 | NULL | 0 | Valor do desconto de imposto |
+| ValTaxaBol_crc | NÃO | numeric | 9 | NULL | 0 | Valor da taxa de boleto |
+| ValParcelaAntec_crc | NÃO | numeric | 9 | NULL | 1 | Valor da parcela com antecipação |
+| ValJurosCompAntec_crc | NÃO | numeric | 9 | NULL | 1 | Valor dos juros compostos antecipados |
+| ValJurosCompPriceAntec_crc | NÃO | numeric | 9 | NULL | 1 | Valor dos juros compostos Price antecipados |
+| ValCorrecaoAntec_crc | NÃO | numeric | 9 | NULL | 1 | Valor da correção antecipada |
+| CapJuros_crc | NÃO | varchar | 30 | NULL | 1 | CAP de juros |
+| CapCorrecao_crc | NÃO | varchar | 30 | NULL | 1 | CAP de correção |
+| Cap_crc | NÃO | varchar | 30 | NULL | 1 | CAP da venda |
+| ValDescontoAVPPorFaixa_crc | NÃO | numeric | 9 | NULL | 0 | Valor do desconto AVP por faixa |
+
+---
+
+## Empresas
+
+Cadastro das empresas do grupo, com dados de identificação fiscal, endereço, contato e configurações de integração.
+
+| Coluna | Chave | Tipo | Tamanho | Padrão | Null | Descrição |
+|--------|:-----:|------|:-------:|:------:|:----:|-----------|
+| Codigo_emp | SIM | smallint | 2 | NULL | 0 | Código da empresa |
+| Desc_emp | NÃO | varchar | 150 | NULL | 1 | Descrição da empresa |
+| CGC_emp | NÃO | varchar | 14 | NULL | 0 | CGC da empresa |
+| IE_emp | NÃO | varchar | 20 | NULL | 0 | Inscrição estadual da empresa |
+| Endereco_emp | NÃO | varchar | 100 | NULL | 1 | Endereço da sede da empresa |
+| Setor_emp | NÃO | varchar | 100 | NULL | 1 | Setor da sede da empresa |
+| Cidade_emp | NÃO | varchar | 50 | NULL | 1 | Cidade da sede da empresa |
+| UF_emp | NÃO | varchar | 5 | NULL | 1 | Estado da sede da empresa |
+| CEP_emp | NÃO | varchar | 8 | NULL | 0 | CEP da sede da empresa |
+| Fone_emp | NÃO | varchar | 20 | NULL | 1 | Telefone da empresa |
+| Fax_emp | NÃO | varchar | 20 | NULL | 1 | Fax da empresa |
+| RedIcms_emp | NÃO | numeric | 9 | 0 | 0 | Valor da redução do ICMS |
+| IpiIsenta_emp | NÃO | tinyint | 1 | 0 | 0 | Se a empresa é isenta do pagamento do IPI |
+| AtInat_emp | NÃO | tinyint | 1 | 0 | 0 | 0 = Ativo; 1 = Inativo |
+| CodEmPresaNet_emp | NÃO | varchar | 10 | NULL | 1 | Código da empresa no site Construcompras |
+| Anexos_Emp | NÃO | tinyint | 1 | NULL | 1 | Tipos de anexos do registro (Foto, Comentário e Pendência) armazenados como somatório |
+| InscrMunic_emp | NÃO | varchar | 30 | NULL | 1 | Inscrição municipal da empresa |
+| EmpresaFolha_emp | NÃO | varchar | 10 | NULL | 1 | Código de DePara da empresa para geração de arquivo de folha |
+| NumCid_emp | NÃO | int | 4 | NULL | 1 | Código da cidade |
+| email_emp | NÃO | varchar | 50 | NULL | 1 | Endereço de e-mail |
+| TipoInsc_emp | NÃO | tinyint | 1 | NULL | 0 | 1 = CNPJ; 2 = CEI (pessoas físicas) |
+| NumEnd_emp | NÃO | varchar | 20 | NULL | 1 | Número do endereço |
+| OptSimples_emp | NÃO | tinyint | 1 | NULL | 1 | Se a empresa é optante pelo Simples e qual a opção |
+| QtdeSocio_Emp | NÃO | tinyint | 1 | NULL | 1 | Quantidade de sócios |
+| DDDFone_Emp | NÃO | varchar | 2 | NULL | 1 | DDD do telefone |
+| DDDFax_Emp | NÃO | varchar | 2 | NULL | 1 | DDD do fax |
+| IncetivadorCultural_emp | NÃO | bit | 1 | NULL | 1 | Se é incentivador cultural |
+| CodIdxCorrPat_Emp | NÃO | varchar | 5 | NULL | 1 | Código do índice de correção patrimonial |
+| CodIdxIndPat_Emp | NÃO | varchar | 5 | NULL | 1 | Código do índice de indexação patrimonial |
+| DataSimples_emp | NÃO | datetime | 8 | NULL | 1 | Data de adesão ao Simples |
+| InsNIRE_emp | NÃO | varchar | 11 | NULL | 1 | Número de inscrição no registro de empresas |
+| InsSuframa_emp | NÃO | varchar | 9 | NULL | 1 | Número de inscrição no SUFRAMA |
+| NumBrr_emp | NÃO | int | 4 | NULL | 1 | Código do bairro |
+| NumLogr_emp | NÃO | int | 4 | NULL | 1 | Código do logradouro |
+| NumCd_emp | NÃO | int | 4 | NULL | 1 | Contador da tabela CampanhaDesconto |
+| CodPesEmpresa_emp | NÃO | int | 4 | NULL | 1 | Código da pessoa vinculada à empresa |
+| CodGrupo_emp | NÃO | varchar | 30 | NULL | 1 | Código do grupo da empresa |
+
+---
+
+## ItensRecebidas
+
+Itens das vendas recebidas/quitadas, espelho de ItensVenda para contratos migrados para VendasRecebidas.
+
+| Coluna | Chave | Tipo | Tamanho | Padrão | Null | Descrição |
+|--------|:-----:|------|:-------:|:------:|:----:|-----------|
+| Empresa_itr | SIM | smallint | 2 | NULL | 0 | Código da empresa |
+| NumVend_Itr | SIM | int | 4 | 0 | 0 | Número da venda |
+| Obra_Itr | SIM | varchar | 5 | NULL | 0 | Obra da venda |
+| Produto_Itr | SIM | int | 4 | 0 | 0 | Produto da venda |
+| CodPerson_Itr | SIM | int | 4 | 0 | 0 | Código de personalização |
+| PrecoProc_Itr | NÃO | numeric | 9 | 0 | 1 | Preço do produto |
+| Qtde_Itr | NÃO | numeric | 9 | 0 | 1 | Quantidade do produto |
+| Contrato_Itr | NÃO | int | 4 | 0 | 1 | Contrato do produto escolhido |
+| Item_Itr | NÃO | varchar | 50 | NULL | 1 | Item do produto (vem do PlanProd) |
+| ValComissaoDir_itr | NÃO | numeric | 9 | NULL | 0 | Valor da comissão paga diretamente |
+| PorcentComissao_itr | NÃO | numeric | 9 | NULL | 0 | Percentual de comissão no produto |
+| PorcentItem_itr | NÃO | numeric | 9 | NULL | 0 | Percentual do item |
+| UnicoItemDimob_itr | NÃO | tinyint | 1 | NULL | 0 | Se é único item para o DIMOB |
+
+---
+
+## ItensVenda
+
+Itens das vendas ativas, relacionando produto e personalização a cada contrato de venda.
+
+| Coluna | Chave | Tipo | Tamanho | Padrão | Null | Descrição |
+|--------|:-----:|------|:-------:|:------:|:----:|-----------|
+| Empresa_itv | SIM | smallint | 2 | NULL | 0 | Código da empresa |
+| NumVend_Itv | SIM | int | 4 | 0 | 0 | Número da venda |
+| Obra_Itv | SIM | varchar | 5 | NULL | 0 | Obra da venda |
+| Produto_Itv | SIM | int | 4 | 0 | 0 | Produto da venda |
+| CodPerson_Itv | SIM | int | 4 | 0 | 0 | Código de personalização |
+| PrecoProc_Itv | NÃO | numeric | 9 | 0 | 1 | Preço do produto |
+| Qtde_Itv | NÃO | numeric | 9 | 0 | 1 | Quantidade do produto |
+| Contrato_Itv | NÃO | int | 4 | 0 | 1 | Contrato do produto escolhido |
+| Item_Itv | NÃO | varchar | 50 | NULL | 1 | Item do produto (vem do PlanProd) |
+| ValComissaoDir_Itv | NÃO | numeric | 9 | NULL | 0 | Valor da comissão paga diretamente |
+| PorcentComissao_itv | NÃO | numeric | 9 | NULL | 0 | Percentual de comissão no produto |
+| PorcentItem_itv | NÃO | numeric | 9 | NULL | 0 | Percentual do item |
+| UnicoItemDimob_itv | NÃO | tinyint | 1 | NULL | 0 | Se é único item para o DIMOB |
+
+---
+
+## Pessoas
+
+Cadastro de pessoas físicas e jurídicas (clientes, fornecedores, funcionários), com dados de identificação, contato e acesso ao portal.
+
+| Coluna | Chave | Tipo | Tamanho | Padrão | Null | Descrição |
+|--------|:-----:|------|:-------:|:------:|:----:|-----------|
+| cod_pes | SIM | int | 4 | NULL | 0 | Código da pessoa |
+| nome_pes | NÃO | varchar | 150 | NULL | 1 | Nome / Razão Social |
+| tipo_pes | NÃO | tinyint | 1 | 0 | 1 | 0 = Física; 1 = Jurídica |
+| cpf_pes | NÃO | varchar | 14 | NULL | 1 | Número do CPF ou CGC |
+| dtcad_pes | NÃO | datetime | 8 | NULL | 1 | Data do cadastro |
+| dtnasc_pes | NÃO | datetime | 8 | NULL | 1 | Data de nascimento / fundação |
+| IntExt_pes | NÃO | tinyint | 1 | 0 | 1 | 1 = Interno; 2 = Externo |
+| UsrCad_pes | NÃO | varchar | 8 | NULL | 1 | Login do usuário que cadastrou |
+| UsrAlt_pes | NÃO | varchar | 8 | NULL | 1 | Login do usuário da última alteração |
+| Status_pes | NÃO | tinyint | 1 | 0 | 1 | 1 = Temporário; 2 = Confirmado |
+| Tratamento_pes | NÃO | varchar | 50 | NULL | 1 | Forma de tratamento (Sr., Sra., Ilmo. etc.) |
+| Email_pes | NÃO | varchar | 400 | NULL | 1 | E-mail da pessoa / empresa |
+| EndWWW_pes | NÃO | varchar | 255 | NULL | 1 | Site da pessoa / empresa |
+| Matricula_Pes | NÃO | varchar | 15 | NULL | 1 | Matrícula do funcionário na folha de pagamento (único) |
+| AtInat_pes | NÃO | tinyint | 1 | 0 | 0 | 0 = Ativo; 1 = Inativo |
+| DataAlt_pes | NÃO | datetime | 8 | NULL | 1 | Data da última alteração |
+| NomeFant_Pes | NÃO | varchar | 150 | NULL | 1 | Nome fantasia |
+| Anexos_pes | NÃO | tinyint | 1 | NULL | 1 | Tipos de anexos do registro (Pendência, Comentário ou Foto) |
+| InscrMunic_pes | NÃO | varchar | 30 | NULL | 1 | Número da inscrição municipal |
+| inscrest_pes | NÃO | varchar | 30 | NULL | 1 | Número da inscrição estadual |
+| Login_pes | NÃO | varchar | 30 | NULL | 1 | Login para acesso à área de clientes no portal |
+| Senha_pes | NÃO | varchar | 15 | NULL | 1 | Senha para acesso à área de clientes no portal |
+| CNAE_pes | NÃO | varchar | 8 | NULL | 1 | Código CNAE da atividade econômica |
+| DataCadPortal_pes | NÃO | datetime | 8 | NULL | 1 | Data de cadastro no portal |
+| CadastradoPrefeituraGyn_pes | NÃO | bit | 1 | NULL | 0 | 0 = Não cadastrado; 1 = Cadastrado na prefeitura de Goiânia |
+| HabilitadoRiscoSacado_pes | NÃO | bit | 1 | NULL | 0 | 0 = Não habilitado; 1 = Habilitado para risco sacado |
+| CEI_Pes | NÃO | varchar | 12 | NULL | 1 | Número de inscrição CEI (pessoa física ou jurídica) |
+| IntegradoEDI_pes | NÃO | int | 4 | NULL | 1 | Integração EDI |
+| QualificaoSped_pes | NÃO | varchar | 5 | NULL | 1 | Qualificação no SPED |
+| siglaobr_pes | NÃO | varchar | 5 | NULL | 1 | Sigla da obra vinculada |
+| siglaEmp_pes | NÃO | smallint | 2 | NULL | 1 | Sigla da empresa vinculada |
+| BloqueioLgpd_Pes | NÃO | tinyint | 1 | NULL | 1 | Bloqueio por solicitação LGPD |
+
+---
+
+## PesTel
+
+Telefones das pessoas cadastradas, com suporte a múltiplos registros por pessoa (residencial, comercial, celular etc.).
+
+| Coluna | Chave | Tipo | Tamanho | Padrão | Null | Descrição |
+|--------|:-----:|------|:-------:|:------:|:----:|-----------|
+| pes_tel | SIM | int | 4 | NULL | 0 | Código da pessoa |
+| fone_tel | SIM | varchar | 11 | NULL | 0 | Número do telefone |
+| ddd_tel | SIM | varchar | 4 | NULL | 0 | DDD do telefone |
+| ram_tel | NÃO | varchar | 50 | NULL | 1 | Número do ramal |
+| tipo_tel | NÃO | tinyint | 1 | 0 | 1 | Tipo: 0 = Residencial; 1 = Comercial; 2 = Celular; 3 = Recado; 4 = Fax; 5 = Bip; 6 = Telex; 7 = Outro; 8 = Fone/Fax |
