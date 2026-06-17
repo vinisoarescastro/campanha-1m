@@ -18,7 +18,7 @@ A campanha **"5 Casas e 1 Milhão"** vigora de **julho a dezembro de 2025** e pr
   - Cupons de setembro → sorteio em **15/10/2025**
   - Cupons de outubro → sorteio em **15/11/2025**
   - Cupons de novembro → sorteio em **15/12/2025**
-- **1 sorteio final em 15/08/2026** com prêmio de **R$ 1.000.000,00** — todos os cupons gerados entre julho e dezembro/2025 participam.
+- **1 sorteio final em 15/01/2027** com prêmio de **R$ 1.000.000,00** — todos os cupons gerados entre julho e dezembro/2025 participam.
 
 **Geração de cupons:** a cada **R$ 100,00 completos** recebidos no mês, o cliente ganha **1 cupom**, sem limite máximo.
 
