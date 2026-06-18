@@ -5,6 +5,23 @@
 
 ---
 
+## [Infraestrutura Fabric] — 2026-06-18
+
+### Adicionado
+- `docs/tecnico/fabric/dw_estrutura.md` — estrutura do Warehouse no Microsoft Fabric (workspace FB_Comercial, artefato `dw_campanha_1m`)
+- `docs/tecnico/fabric/df_bronze_vw_campanha_1m.md` — configuração completa do Dataflow Gen2: fonte (BURITI-BD-02/UAU via GW_POWERBI_SERVER), query utilizada, tabela de destino e fluxo de execução
+- `docs/tecnico/fabric/pipeline_copy.md` — histórico da tentativa de ingestão via Copy Activity com registro dos erros encontrados (OAuth expirado e truncamento VARCHAR)
+
+### Contexto
+Configuração da infraestrutura de ingestão de dados no Microsoft Fabric para suporte à campanha.
+A ingestão da base elegível foi implementada via Dataflow Gen2 com query customizada
+(`sql/exploracao/01_base_elegivel_campanha.sql`), carregando os dados na tabela
+`dbo.bronze_query_base_elegivel_campanha` do Warehouse `dw_campanha_1m`.
+A tentativa prévia via Copy Activity foi abandonada após erros de autenticação OAuth
+e truncamento de VARCHAR na coluna `Status Sorteio`.
+
+---
+
 ## [Estruturação Inicial] — 2026-06-17
 
 ### Adicionado
