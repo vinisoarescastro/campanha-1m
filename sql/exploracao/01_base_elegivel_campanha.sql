@@ -17,12 +17,15 @@ SELECT
     pc.Obra_Ven                                                 [CodObra],
     ps.Descricao_psc                                            [Produto],
     pc.Num_Ven                                                  [Venda],
+	up.identificador_unid [Identificador],
     FORMAT(pc.Data_Ven, 'dd/MM/yyyy')                           [Dt.Venda],
+
     FORMAT(pc.ValorTot_Ven, 'C')                                [VlrVenda],
-    UPPER(PesCli.Nome_pes)                                      AS NomeCliente,
+    UPPER(PesCli.Nome_pes)                                      [NomeCliente],
     PesCli.cpf_pes,
-    LOWER(PesCli.Email_pes)                                     AS EmailCliente,
-    ISNULL(tel.Telefone2, tel.Telefone1)                        AS ContatoCliente,
+    LOWER(PesCli.Email_pes)                                     [EmailCliente],
+    TelefoneFormatado,
+	TipoTelefone,
 
     CASE 
         WHEN crConsolidado.StatusContasReceber = 'Inadimplente' THEN 'Inadimplente'
@@ -55,15 +58,23 @@ SELECT
         WHEN inadimMesPag.EraInadimplenteMesPagamento = 1 THEN 'Sim'
         ELSE 'Não'
     END                                                         [Inadimplente no Mês Pago],
-
-    --  Status final do sorteio
+  --  Status final do sorteio (Apto / Não Apto)
     CASE
         WHEN ISNULL(recTotais.ValorRec, 0) = 0
-            THEN 'Não Apto/Sem pagamento'
+            THEN 'NÃO APTO'
         WHEN inadimMesPag.EraInadimplenteMesPagamento = 1
-            THEN 'Não Apto/Inadimplente no mês do pagamento'
+            THEN 'NÃO APTO'
         ELSE 'APTO'
-    END                                                         [Status Sorteio]
+    END                                                         [Status Sorteio],
+
+    --  Motivo do status do sorteio
+    CASE
+        WHEN ISNULL(recTotais.ValorRec, 0) = 0
+            THEN 'SEM PAGAMENTO'
+        WHEN inadimMesPag.EraInadimplenteMesPagamento = 1
+            THEN 'INADIMPLENTE NO MÊS DO PAGAMENTO'
+        ELSE 'PAGAMENTO EM DIA'
+    END                                                         [Motivo]
 
 FROM
 (
@@ -134,7 +145,7 @@ INNER JOIN
 -- LEFT JOIN: Unidade/Personalização
 LEFT JOIN
 (
-    SELECT Empresa_unid, Obra_unid, Prod_unid, NumPer_unid
+    SELECT Empresa_unid, Obra_unid, Prod_unid, NumPer_unid, identificador_unid
     FROM UnidadePer WITH(NOLOCK)
     WHERE Vendido_unid <> 10
 ) AS up
@@ -155,15 +166,117 @@ LEFT JOIN Pessoas AS PesCli WITH(NOLOCK)
 LEFT JOIN
 (
     SELECT
-        t.pes_tel,
-        MAX(CASE WHEN T.seq = 1 THEN T.ddd_tel + '' + T.fone_tel END) AS Telefone1,
-        MAX(CASE WHEN T.seq = 2 THEN T.ddd_tel + '' + T.fone_tel END) AS Telefone2
+        classificado.pes_tel,
+        classificado.NumeroTratado  AS TelefoneFormatado,
+        classificado.TipoTel        AS TipoTelefone
     FROM
     (
-        SELECT ROW_NUMBER() OVER(PARTITION BY pt.pes_tel ORDER BY (SELECT NULL)) AS seq, *
-        FROM PesTel AS pt WITH(NOLOCK)
-    ) T
-    GROUP BY pes_tel
+        SELECT
+            base.pes_tel,
+            base.NumeroCompleto,
+            base.FoneLimpo,
+ 
+            -- Número tratado com regra do 9
+            CASE
+                -- Celular: 11 dígitos limpos, fone começa com 9
+                WHEN LEN(base.NumeroCompleto) = 11
+                 AND LEFT(base.FoneLimpo, 1) = '9'
+                    THEN base.NumeroCompleto
+ 
+                -- Celular antigo: 10 dígitos limpos, fone começa com 6,7,8,9 → insere 9
+                WHEN LEN(base.NumeroCompleto) = 10
+                 AND LEFT(base.FoneLimpo, 1) IN ('6','7','8','9')
+                    THEN base.DddLimpo + '9' + base.FoneLimpo
+ 
+                -- Fixo: 10 dígitos limpos, fone começa com 2,3,4,5
+                WHEN LEN(base.NumeroCompleto) = 10
+                 AND LEFT(base.FoneLimpo, 1) IN ('2','3','4','5')
+                    THEN base.NumeroCompleto
+ 
+                -- Indefinido: retorna o número limpo mesmo assim
+                ELSE base.NumeroCompleto
+            END AS NumeroTratado,
+ 
+            -- Classificação do tipo
+            CASE
+                WHEN LEN(base.NumeroCompleto) = 11
+                 AND LEFT(base.FoneLimpo, 1) = '9'
+                    THEN 'Celular'
+ 
+                WHEN LEN(base.NumeroCompleto) = 10
+                 AND LEFT(base.FoneLimpo, 1) IN ('6','7','8','9')
+                    THEN 'Celular (corrigido)'
+ 
+                WHEN LEN(base.NumeroCompleto) = 10
+                 AND LEFT(base.FoneLimpo, 1) IN ('2','3','4','5')
+                    THEN 'Fixo'
+ 
+                ELSE 'Indefinido'
+            END AS TipoTel,
+ 
+            -- Prioridade: Celular=1, Celular corrigido=2, Fixo=3, Indefinido=4
+            ROW_NUMBER() OVER (
+                PARTITION BY base.pes_tel
+                ORDER BY
+                    CASE
+                        WHEN LEN(base.NumeroCompleto) = 11
+                         AND LEFT(base.FoneLimpo, 1) = '9'
+                            THEN 1
+                        WHEN LEN(base.NumeroCompleto) = 10
+                         AND LEFT(base.FoneLimpo, 1) IN ('6','7','8','9')
+                            THEN 2
+                        WHEN LEN(base.NumeroCompleto) = 10
+                         AND LEFT(base.FoneLimpo, 1) IN ('2','3','4','5')
+                            THEN 3
+                        ELSE 4
+                    END
+            ) AS prioridade
+ 
+        FROM
+        (
+            -- ----------------------------------------------------
+            -- Limpeza única: remove hífen/espaço/parênteses e
+            -- zeros à esquerda (DDD ou fone digitado com 0 extra)
+            -- ----------------------------------------------------
+            SELECT
+                pt.pes_tel,
+ 
+                -- DDD limpo, sem zero(s) à esquerda
+                SUBSTRING(
+                    REPLACE(REPLACE(REPLACE(REPLACE(
+                        LTRIM(RTRIM(pt.ddd_tel)),
+                    '-',''),' ',''),'(',''),')',''),
+                    PATINDEX('%[1-9]%',
+                        REPLACE(REPLACE(REPLACE(REPLACE(
+                            LTRIM(RTRIM(pt.ddd_tel)),
+                        '-',''),' ',''),'(',''),')','') + '1'),
+                    LEN(REPLACE(REPLACE(REPLACE(REPLACE(
+                        LTRIM(RTRIM(pt.ddd_tel)),
+                    '-',''),' ',''),'(',''),')',''))
+                ) AS DddLimpo,
+ 
+                -- Fone limpo, sem zero(s) à esquerda
+                SUBSTRING(
+                    REPLACE(REPLACE(REPLACE(REPLACE(
+                        LTRIM(RTRIM(pt.fone_tel)),
+                    '-',''),' ',''),'(',''),')',''),
+                    PATINDEX('%[1-9]%',
+                        REPLACE(REPLACE(REPLACE(REPLACE(
+                            LTRIM(RTRIM(pt.fone_tel)),
+                        '-',''),' ',''),'(',''),')','') + '1'),
+                    LEN(REPLACE(REPLACE(REPLACE(REPLACE(
+                        LTRIM(RTRIM(pt.fone_tel)),
+                    '-',''),' ',''),'(',''),')',''))
+                ) AS FoneLimpo
+ 
+            FROM PesTel AS pt WITH(NOLOCK)
+        ) AS base0
+        CROSS APPLY (SELECT base0.pes_tel, base0.DddLimpo, base0.FoneLimpo,
+                             base0.DddLimpo + base0.FoneLimpo AS NumeroCompleto) AS base
+ 
+    ) AS classificado
+    WHERE classificado.prioridade = 1   -- pega apenas o melhor número por pessoa
+ 
 ) AS tel
     ON tel.pes_tel = pc.Cliente_Ven
 
@@ -186,7 +299,7 @@ LEFT JOIN
         SUM(IIF(cr.Tipo_Prc = 'R',  1, 0))  AS Qtd_R,
         SUM(IIF(cr.Tipo_Prc = 'I',  1, 0))  AS Qtd_I,
         SUM(IIF(cr.Tipo_Prc = 'OP', 1, 0))  AS Qtd_OP,
-        SUM(cr.Valor_Prc)                    AS ValorAReceber,
+        SUM(crc.ValParcela_crc)                    AS ValorAReceber,
         MAX(CASE WHEN cr.Data_Prc < CAST(GETDATE() AS DATE)
                  THEN 'Inadimplente' END)    AS StatusContasReceber,
         DATEDIFF(DAY,
@@ -195,8 +308,8 @@ LEFT JOIN
             CAST(GETDATE() AS DATE)
         )                                    AS DiasAtraso,
         SUM(CASE WHEN cr.Data_Prc < CAST(GETDATE() AS DATE)
-                      AND crc.ValParcelaAntec_crc IS NOT NULL
-                 THEN crc.ValParcelaAntec_crc
+                      AND crc.ValParcela_crc IS NOT NULL
+                 THEN crc.ValParcela_crc
                  ELSE 0 END)                 AS ValorInadimplente
     FROM ContasReceber cr WITH(NOLOCK)
     LEFT JOIN ContasReceberCalc crc WITH(NOLOCK)
@@ -238,7 +351,7 @@ LEFT JOIN
         MAX(r.Data_Rec)                 AS DataUltimoRecebimento
     FROM Recebidas r WITH(NOLOCK)
     WHERE CAST(r.Data_Rec AS DATE) >= '2026-05-01'
-      AND r.ParcType_Rec <> '1'
+      AND r.Tipo_rec <> '1'
     GROUP BY r.Empresa_rec, r.Obra_rec, r.NumVend_rec
 ) AS recTotais
     ON  recTotais.Empresa_rec = pc.Empresa_ven
@@ -261,13 +374,12 @@ LEFT JOIN
         AND cr.Tipo_Prc   <> '1'
         -- havia parcela vencida antes do 1º dia do mês em que o pagamento ocorreu
         AND cr.Data_Prc    < DATEFROMPARTS(YEAR(r.Data_Rec), MONTH(r.Data_Rec), 1)
-    WHERE CAST(r.Data_Rec AS DATE) >= '01/05/2026'
-      AND r.ParcType_Rec <> '1'
+    WHERE CAST(r.Data_Rec AS DATE) >= '01/07/2026'
+      AND r.Tipo_rec <> '1'
 ) AS inadimMesPag
     ON  inadimMesPag.Empresa_rec = pc.Empresa_ven
     AND inadimMesPag.Obra_rec    = pc.Obra_Ven
     AND inadimMesPag.NumVend_rec = pc.Num_Ven
 
-WHERE pc.Status_Ven = 0
-
+WHERE pc.Status_Ven = 0 
 ORDER BY pc.Cidade;
